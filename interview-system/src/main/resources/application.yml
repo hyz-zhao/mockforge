@@ -1,0 +1,63 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: interview-system
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/interview_system?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ${REDIS_PASSWORD:}
+      database: 0
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 10
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+deepseek:
+  api-key: ${DEEPSEEK_API_KEY:sk-a04d4bb2f576439b9de2052bfb269edf}
+  base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+  model: deepseek-chat
+  temperature: 0.7
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.interview.entity
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+
+jwt:
+  secret: ${JWT_SECRET:mySecretKeyForInterviewSystem2024MustBeAtLeast256BitsLong}
+  expiration: 86400000
+
+file:
+  upload-dir: ${FILE_UPLOAD_DIR:./uploads/resume}
+  max-size: 10485760
+
+interview:
+  max-per-day: 3
+  default-question-count: 8

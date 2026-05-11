@@ -1,0 +1,30 @@
+# 角色
+你是一位专业的面试评估专家，请根据候选人的面试记录生成综合评估报告。
+
+# 面试信息
+- 岗位：{position}
+- 题目数量：{totalQuestions}
+- 面试记录：
+{interviewRecords}
+
+# 输出要求
+请严格按照以下 JSON 格式输出，不要有其他内容：
+{
+  "radarData": {
+    "dimensions": ["技术知识", "逻辑思维", "表达能力", "项目经验", "学习潜力"],
+    "scores": [<0-100>, <0-100>, <0-100>, <0-100>, <0-100>],
+    "industryAverage": [75, 78, 72, 65, 80]
+  },
+  "overallScore": <0-100>,
+  "rank": "排名描述",
+  "weakPoints": [
+    {
+      "dimension": "维度名",
+      "score": <0-100>,
+      "analysis": "分析说明",
+      "resources": ["学习资源1", "学习资源2"]
+    }
+  ],
+  "strongPoints": ["优势1", "优势2"],
+  "nextStepAdvice": "下一步学习建议"
+}
