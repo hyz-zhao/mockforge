@@ -9,6 +9,7 @@ import com.interview.entity.Question;
 import com.interview.repository.InterviewRecordMapper;
 import com.interview.repository.InterviewSessionMapper;
 import com.interview.repository.QuestionMapper;
+import com.interview.service.AIEvaluateService;
 import com.interview.service.InterviewService;
 import com.interview.service.QuestionService;
 import com.interview.utils.AIClient;
@@ -35,6 +36,7 @@ public class InterviewWebSocketHandler extends TextWebSocketHandler {
     private final QuestionMapper questionMapper;
     private final InterviewService interviewService;
     private final QuestionService questionService;
+    private final AIEvaluateService aiEvaluateService;
     private final AIClient aiClient;
     private final ObjectMapper objectMapper;
 
@@ -46,6 +48,7 @@ public class InterviewWebSocketHandler extends TextWebSocketHandler {
                                      QuestionMapper questionMapper,
                                      InterviewService interviewService,
                                      QuestionService questionService,
+                                     AIEvaluateService aiEvaluateService,
                                      AIClient aiClient,
                                      ObjectMapper objectMapper) {
         this.sessionMapper = sessionMapper;
@@ -53,6 +56,7 @@ public class InterviewWebSocketHandler extends TextWebSocketHandler {
         this.questionMapper = questionMapper;
         this.interviewService = interviewService;
         this.questionService = questionService;
+        this.aiEvaluateService = aiEvaluateService;
         this.aiClient = aiClient;
         this.objectMapper = objectMapper;
     }
@@ -153,25 +157,12 @@ public class InterviewWebSocketHandler extends TextWebSocketHandler {
         record.setAnsweredAt(LocalDateTime.now());
         record.setDeleted(0);
 
-        String evaluationJson = streamEvaluation(session, questionText, content, referenceAnswer, scoringDimensions,
-                interviewSession.getPosition(), questionOrder, interviewSession.getTotalQuestions(),
-                interviewSession.getInterviewMode());
-
-        record.setAiEvaluation(evaluationJson);
-
-        try {
-            JsonNode evalNode = objectMapper.readTree(evaluationJson);
-            if (evalNode.has("overallScore")) {
-                record.setQuestionScore(evalNode.get("overallScore").asDouble());
-            }
-            if (evalNode.has("followUp")) {
-                record.setFollowUp(evalNode.get("followUp").asText());
-            }
-        } catch (Exception e) {
-            log.warn("评分JSON解析失败", e);
-        }
-
         recordMapper.insert(record);
+        Long recordId = record.getId();
+
+        sendMessage(session, buildEvaluatingJson(questionOrder));
+
+        aiEvaluateService.evaluateAnswerAsync(recordId, questionText, content, referenceAnswer, scoringDimensions);
 
         int completed = interviewSession.getCompletedQuestions() + 1;
         interviewSession.setCompletedQuestions(completed);
@@ -376,6 +367,10 @@ public class InterviewWebSocketHandler extends TextWebSocketHandler {
 
     private String buildInterviewEndJson(Long sessionId) {
         return "{\"type\":\"interview_end\",\"sessionId\":" + sessionId + "}";
+    }
+
+    private String buildEvaluatingJson(int questionOrder) {
+        return "{\"type\":\"evaluating\",\"questionOrder\":" + questionOrder + ",\"message\":\"AI正在评分中...\"}";
     }
 
     private String buildErrorJson(String message) {

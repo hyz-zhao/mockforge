@@ -8,4 +8,7 @@ public interface AIEvaluateService {
                           String referenceAnswer, String scoringDimensions);
 
     InterviewReportResp generateReport(Long sessionId);
+
+    void evaluateAnswerAsync(Long recordId, String questionText, String userAnswer,
+                             String referenceAnswer, String scoringDimensions);
 }

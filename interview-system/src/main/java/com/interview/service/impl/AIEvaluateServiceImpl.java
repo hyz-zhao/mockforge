@@ -13,6 +13,7 @@ import com.interview.utils.AIClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,6 +31,33 @@ public class AIEvaluateServiceImpl implements AIEvaluateService {
     private final ObjectMapper objectMapper;
     private final InterviewSessionMapper sessionMapper;
     private final InterviewRecordMapper recordMapper;
+
+    @Async("aiTaskExecutor")
+    @Override
+    public void evaluateAnswerAsync(Long recordId, String questionText, String userAnswer,
+                                   String referenceAnswer, String scoringDimensions) {
+        try {
+            String evaluationJson = evaluateAnswer(questionText, userAnswer, referenceAnswer, scoringDimensions);
+            InterviewRecord record = recordMapper.selectById(recordId);
+            if (record != null) {
+                record.setAiEvaluation(evaluationJson);
+                try {
+                    JsonNode evalNode = objectMapper.readTree(evaluationJson);
+                    if (evalNode.has("overallScore")) {
+                        record.setQuestionScore(evalNode.get("overallScore").asDouble());
+                    }
+                    if (evalNode.has("followUp")) {
+                        record.setFollowUp(evalNode.get("followUp").asText());
+                    }
+                } catch (Exception e) {
+                    log.warn("异步评分JSON解析失败", e);
+                }
+                recordMapper.updateById(record);
+            }
+        } catch (Exception e) {
+            log.error("异步评分失败, recordId={}", recordId, e);
+        }
+    }
 
     @Override
     public String evaluateAnswer(String questionText, String userAnswer,

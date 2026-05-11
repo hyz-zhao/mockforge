@@ -30,6 +30,9 @@ export default function InterviewRoom() {
 
   const handleWsMessage = useCallback((data) => {
     switch (data.type) {
+      case 'evaluating':
+        setWaitingForNext(true)
+        break
       case 'stream_chunk':
         setIsStreaming(true)
         setStreamContent((prev) => prev + (data.content || ''))
@@ -431,6 +434,13 @@ export default function InterviewRoom() {
             <div className="bg-white rounded-xl p-5 border border-gray-100">
               <div className="text-sm text-gray-500 mb-2">AI 正在分析...</div>
               <TypewriterText text={streamContent} isTyping={isStreaming} />
+            </div>
+          )}
+
+          {waitingForNext && !streamContent && !currentEval && (
+            <div className="bg-amber-50 rounded-xl p-5 border border-amber-100 flex items-center justify-center gap-3">
+              <div className="animate-spin rounded-full h-5 w-5 border-2 border-amber-500 border-t-transparent"></div>
+              <span className="text-amber-700">AI 正在评分中，请稍候...</span>
             </div>
           )}
 
