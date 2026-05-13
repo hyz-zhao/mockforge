@@ -46,20 +46,22 @@ mysql -u root -p < interview-system/sql/ai_models.sql
 mysql -u root -p < interview-system/sql/knowledge_base.sql
 ```
 
-### 2. 配置后端
+### 2. 配置环境变量
 
-修改 `interview-system/src/main/resources/application.yml`：
+项目使用环境变量存储敏感配置，避免硬编码密钥。
 
-```yaml
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/interview_system?useSSL=false&serverTimezone=Asia/Shanghai
-    username: your_username
-    password: your_password
+复制环境变量模板文件：
 
-deepseek:
-  api-key: your_api_key
-  base-url: https://api.deepseek.com
+```bash
+cp .env.example .env
+```
+
+编辑 `.env` 文件，填入你的配置：
+
+```bash
+DEEPSEEK_API_KEY=your_deepseek_api_key
+JWT_SECRET=your_jwt_secret_at_least_256_bits
+DB_PASSWORD=your_db_password
 ```
 
 ### 3. 启动后端
