@@ -208,8 +208,8 @@ export default function InterviewRoom() {
 
   if (!sessionId || !currentQuestion) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-gray-400">正在加载面试...</div>
+      <div className="min-h-screen flex items-center justify-center bg-warm-50">
+        <div className="text-charcoal-400">正在加载面试...</div>
       </div>
     )
   }
@@ -400,18 +400,25 @@ export default function InterviewRoom() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <nav className="bg-white border-b border-gray-100 px-6 py-3">
+    <div className="min-h-screen bg-warm-50 flex flex-col">
+      <nav className="bg-white/80 backdrop-blur-sm border-b border-warm-200/50 px-6 py-4 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div>
-            <span className="text-lg font-semibold">{position} 面试</span>
-            <span className="ml-3 text-sm text-gray-500">
-              第 {currentIndex + 1} / {totalQuestions} 题
-            </span>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-terracotta-100 flex items-center justify-center">
+              <svg className="w-5 h-5 text-terracotta-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </div>
+            <div>
+              <span className="text-lg font-semibold text-charcoal-900">{position} 面试</span>
+              <span className="ml-3 text-sm text-charcoal-500">
+                第 {currentIndex + 1} / {totalQuestions} 题
+              </span>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}></div>
-            <span className="text-sm text-gray-500">{connected ? '已连接' : '连接中...'}</span>
+            <span className="text-sm text-charcoal-500">{connected ? '已连接' : '连接中...'}</span>
             <button onClick={handleEndInterview} className="btn-secondary text-sm px-3 py-1.5">
               结束面试
             </button>
@@ -421,42 +428,42 @@ export default function InterviewRoom() {
 
       <div className="flex-1 max-w-4xl mx-auto w-full px-6 py-6 flex flex-col">
         <div className="flex-1 overflow-y-auto scrollbar-thin space-y-4 mb-4">
-          <div className="bg-blue-50 rounded-xl p-5">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-sm font-medium text-blue-600">题目 {currentQuestion.order || currentIndex + 1}</span>
-              <span className="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-700">{currentQuestion.category}</span>
-              <span className="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-600">{currentQuestion.difficulty}</span>
+          <div className="bg-white rounded-2xl p-6 shadow-card border border-warm-200/50">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-sm font-medium text-terracotta-600">题目 {currentQuestion.order || currentIndex + 1}</span>
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-terracotta-50 text-terracotta-700">{currentQuestion.category}</span>
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-warm-100 text-charcoal-600">{currentQuestion.difficulty}</span>
             </div>
-            <div className="text-gray-800 text-lg">{currentQuestion.questionText}</div>
+            <div className="text-charcoal-800 text-lg leading-relaxed">{currentQuestion.questionText}</div>
           </div>
 
           {streamContent && (
-            <div className="bg-white rounded-xl p-5 border border-gray-100">
-              <div className="text-sm text-gray-500 mb-2">AI 正在分析...</div>
+            <div className="bg-white rounded-2xl p-6 shadow-card border border-warm-200/50 animate-fade-in-up">
+              <div className="text-sm text-charcoal-400 mb-2">AI 正在分析...</div>
               <TypewriterText text={streamContent} isTyping={isStreaming} />
             </div>
           )}
 
           {waitingForNext && !streamContent && !currentEval && (
-            <div className="bg-amber-50 rounded-xl p-5 border border-amber-100 flex items-center justify-center gap-3">
+            <div className="bg-amber-50 rounded-2xl p-5 border border-amber-100 flex items-center justify-center gap-3">
               <div className="animate-spin rounded-full h-5 w-5 border-2 border-amber-500 border-t-transparent"></div>
               <span className="text-amber-700">AI 正在评分中，请稍候...</span>
             </div>
           )}
 
           {currentEval && (
-            <div className="bg-green-50 rounded-xl p-5 border border-green-100">
-              <div className="flex items-center justify-between mb-3">
+            <div className="bg-white rounded-2xl p-6 shadow-card border border-green-200/50 animate-fade-in-up">
+              <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-medium text-green-700">评分结果</span>
-                <span className="text-2xl font-bold text-green-600">{currentEval.overallScore}分</span>
+                <span className="text-3xl font-bold text-green-600">{currentEval.overallScore}分</span>
               </div>
 
               {currentEval.scores && (
-                <div className="grid grid-cols-4 gap-3 mb-4">
+                <div className="grid grid-cols-4 gap-3 mb-5">
                   {Object.entries(currentEval.scores).map(([key, val]) => (
-                    <div key={key} className="text-center">
-                      <div className="text-lg font-semibold text-gray-800">{val}/10</div>
-                      <div className="text-xs text-gray-500">
+                    <div key={key} className="text-center bg-green-50 rounded-xl p-3">
+                      <div className="text-xl font-semibold text-charcoal-900">{val}/10</div>
+                      <div className="text-xs text-charcoal-500 mt-1">
                         {key === 'accuracy' ? '准确性' : key === 'depth' ? '深度' : key === 'expression' ? '表达' : '应用'}
                       </div>
                     </div>
@@ -465,19 +472,19 @@ export default function InterviewRoom() {
               )}
 
               {currentEval.standardAnswer && (
-                <div className="bg-white rounded-lg p-4 mb-3 border border-green-200">
+                <div className="bg-green-50 rounded-xl p-4 mb-3 border border-green-100">
                   <div className="text-sm font-medium text-green-800 mb-2">标准答案要点</div>
-                  <div className="text-gray-700 text-sm whitespace-pre-line">{currentEval.standardAnswer}</div>
+                  <div className="text-charcoal-700 text-sm whitespace-pre-line leading-relaxed">{currentEval.standardAnswer}</div>
                 </div>
               )}
 
-              <div className="bg-white rounded-lg p-4 mb-3 border border-gray-200">
-                <div className="text-sm font-medium text-gray-700 mb-2">详细反馈</div>
-                <div className="text-gray-600 text-sm whitespace-pre-line">{currentEval.feedback}</div>
+              <div className="bg-warm-50 rounded-xl p-4 mb-3 border border-warm-200">
+                <div className="text-sm font-medium text-charcoal-700 mb-2">详细反馈</div>
+                <div className="text-charcoal-600 text-sm whitespace-pre-line leading-relaxed">{currentEval.feedback}</div>
               </div>
 
               {currentEval.followUp && (
-                <div className="bg-yellow-50 rounded-lg p-3 text-sm text-yellow-800">
+                <div className="bg-amber-50 rounded-xl p-3 text-sm text-amber-800 border border-amber-100">
                   <span className="font-medium">追问：</span>{currentEval.followUp}
                 </div>
               )}
@@ -487,12 +494,12 @@ export default function InterviewRoom() {
           <div ref={chatEndRef} />
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 p-4">
+        <div className="bg-white rounded-2xl border border-warm-200/50 p-5 shadow-card">
           {!waitingForNext ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {voiceText && (
-                <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-600">
-                  <span className="text-xs text-gray-400 block mb-1">语音识别结果：</span>
+                <div className="bg-warm-50 rounded-xl p-4 text-sm text-charcoal-600 border border-warm-200">
+                  <span className="text-xs text-charcoal-400 block mb-1 font-medium">语音识别结果：</span>
                   {voiceText}
                 </div>
               )}
@@ -501,7 +508,7 @@ export default function InterviewRoom() {
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder="输入你的回答..."
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+                className="w-full px-4 py-3 border border-warm-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-terracotta-500 focus:border-transparent resize-none bg-warm-50 text-charcoal-800 placeholder:text-charcoal-400"
                 rows={4}
               />
 
@@ -530,7 +537,7 @@ export default function InterviewRoom() {
                       alert('请允许麦克风权限')
                     }
                   }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm transition-colors"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-warm-100 hover:bg-warm-200 text-charcoal-700 text-sm transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -545,7 +552,7 @@ export default function InterviewRoom() {
             </div>
           ) : (
             <div className="flex items-center justify-between">
-              <span className="text-gray-500">
+              <span className="text-charcoal-500">
                 {currentIndex + 1 < totalQuestions ? '点击下一题继续' : '已完成所有题目'}
               </span>
               <div className="flex gap-3">

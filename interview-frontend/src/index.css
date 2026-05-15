@@ -3,37 +3,67 @@
 @tailwind utilities;
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 text-white px-6 py-2.5 rounded-lg font-medium
-           hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-           transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-terracotta-600 text-white px-8 py-3 rounded-xl font-medium text-sm
+           hover:bg-terracotta-700 focus:outline-none focus:ring-2 focus:ring-terracotta-500 focus:ring-offset-2 focus:ring-offset-warm-50
+           transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+           shadow-warm hover:shadow-warm-lg;
   }
 
   .btn-secondary {
-    @apply bg-white text-gray-700 px-6 py-2.5 rounded-lg font-medium border border-gray-300
-           hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-           transition-colors duration-200;
+    @apply bg-white text-charcoal-800 px-8 py-3 rounded-xl font-medium text-sm border border-charcoal-200
+           hover:border-charcoal-300 hover:bg-charcoal-50 focus:outline-none focus:ring-2 focus:ring-terracotta-500 focus:ring-offset-2 focus:ring-offset-warm-50
+           transition-all duration-200;
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6;
+    @apply bg-white rounded-2xl shadow-card border border-warm-200/50 p-8;
+  }
+
+  .card-hover {
+    @apply bg-white rounded-2xl shadow-card border border-warm-200/50 p-8
+           transition-all duration-300 hover:shadow-warm-lg hover:-translate-y-0.5;
   }
 
   .input-field {
-    @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg
-           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-           placeholder-gray-400 transition-colors duration-200;
+    @apply w-full px-4 py-3 border border-warm-300 rounded-xl
+           focus:outline-none focus:ring-2 focus:ring-terracotta-400 focus:border-terracotta-400
+           placeholder-charcoal-400 bg-white transition-all duration-200;
+  }
+
+  .select-field {
+    @apply w-full px-4 py-3 border border-warm-300 rounded-xl appearance-none
+           focus:outline-none focus:ring-2 focus:ring-terracotta-400 focus:border-terracotta-400
+           bg-white cursor-pointer transition-all duration-200;
+  }
+
+  .tag {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
+           bg-warm-200 text-charcoal-700;
+  }
+
+  .tag-terracotta {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
+           bg-terracotta-100 text-terracotta-700;
+  }
+
+  .heading-display {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .divider {
+    @apply h-px bg-gradient-to-r from-transparent via-warm-300 to-transparent;
   }
 }
 
 .typewriter-cursor::after {
   content: '|';
   animation: blink 0.7s step-end infinite;
-  color: #3b82f6;
+  color: #c45d3a;
   font-weight: bold;
 }
 
@@ -42,20 +72,59 @@ body {
   50% { opacity: 0; }
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
 .scrollbar-thin::-webkit-scrollbar {
   width: 6px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f5f0ea;
   border-radius: 3px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #c9bba8;
   border-radius: 3px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #b8a48a;
 }

@@ -73,10 +73,15 @@ public class InterviewWebSocketHandler extends TextWebSocketHandler {
 
         String uri = session.getUri() != null ? session.getUri().toString() : "";
         Long sessionId = extractSessionId(uri);
+        log.info("WebSocket连接建立：userId={}, uri={}, sessionId={}", userId, uri, sessionId);
         SESSION_ID_MAP.put(userId, sessionId);
 
         if (sessionId != null) {
             InterviewSession interviewSession = sessionMapper.selectById(sessionId);
+            log.info("面试会话查询结果：sessionId={}, session={}, userIdMatch={}, status={}", 
+                    sessionId, interviewSession != null, 
+                    interviewSession != null && interviewSession.getUserId().equals(userId),
+                    interviewSession != null ? interviewSession.getStatus() : "null");
             if (interviewSession != null && interviewSession.getUserId().equals(userId)
                     && "ongoing".equals(interviewSession.getStatus())) {
                 pushFirstQuestion(session, interviewSession);
@@ -294,8 +299,12 @@ public class InterviewWebSocketHandler extends TextWebSocketHandler {
         try {
             String[] parts = uri.split("/");
             for (int i = 0; i < parts.length; i++) {
-                if ("session".equals(parts[i]) && i + 1 < parts.length) {
-                    return Long.parseLong(parts[i + 1]);
+                if ("interview".equals(parts[i]) && i + 1 < parts.length) {
+                    String sessionIdStr = parts[i + 1];
+                    if (sessionIdStr.contains("?")) {
+                        sessionIdStr = sessionIdStr.substring(0, sessionIdStr.indexOf("?"));
+                    }
+                    return Long.parseLong(sessionIdStr);
                 }
             }
             if (parts.length > 0) {
